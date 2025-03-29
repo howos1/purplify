@@ -191,14 +191,12 @@
             }
         });
 
-        // Close functionality
         closeBtn.addEventListener('click', () => {
             fullscreenOverlay.style.display = 'none';
             fullscreenFrame.src = '';
             document.body.style.overflow = '';
         });
 
-        // Also close when clicking outside content
         fullscreenOverlay.addEventListener('click', (e) => {
             if (e.target === fullscreenOverlay) {
                 fullscreenOverlay.style.display = 'none';
