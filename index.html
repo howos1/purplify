@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Purplify</title>
+    <title>Purplify?</title>
     <style>
         body {
             background-color: #0a0a1a;
@@ -46,6 +46,7 @@
             text-align: center;
             z-index: 1;
             animation: float 4s ease-in-out infinite;
+            cursor: pointer;
         }
 
         @keyframes float {
@@ -65,7 +66,6 @@
             font-size: 1.5rem;
             margin-top: 10px;
             opacity: 0.8;
-            cursor: pointer;
         }
 
         .glow {
@@ -100,44 +100,35 @@
             100% { transform: translateY(-500px) translateX(100px); opacity: 0; }
         }
 
-        /* Fullscreen overlay */
-        .fullscreen-overlay {
+        .overlay {
             position: fixed;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
             background-color: rgba(0, 0, 0, 0.9);
-            display: none;
+            display: flex;
             justify-content: center;
             align-items: center;
             z-index: 1000;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.3s ease;
         }
 
-        .fullscreen-content {
-            width: 90%;
-            height: 90%;
-            border: 2px solid #c18cff;
+        .overlay.active {
+            opacity: 1;
+            pointer-events: all;
+        }
+
+        .overlay-content {
+            background-color: #1a0a2a;
+            padding: 1rem;
             border-radius: 10px;
-            overflow: hidden;
-        }
-
-        .fullscreen-content iframe {
-            width: 100%;
-            height: 100%;
-            border: none;
-        }
-
-        .close-btn {
-            position: absolute;
-            top: 20px;
-            right: 20px;
-            color: #c18cff;
-            font-size: 2rem;
-            cursor: pointer;
-            background: none;
-            border: none;
-            z-index: 1001;
+            border: 1px solid #c18cff;
+            box-shadow: 0 0 20px rgba(193, 140, 255, 0.5);
+            max-width: 80%;
+            text-align: center;
         }
     </style>
 </head>
@@ -145,15 +136,14 @@
     <div class="background" id="stars-container"></div>
     <div class="particles" id="particles-container"></div>
 
-    <div class="message">
+    <div class="message" id="message">
         <h1 class="glow">Purplify</h1>
         <p>Closed indefinitely?</p>
     </div>
 
-    <div class="fullscreen-overlay" id="fullscreenOverlay">
-        <button class="close-btn" id="closeBtn">×</button>
-        <div class="fullscreen-content">
-            <iframe id="fullscreenFrame" src="" allowfullscreen></iframe>
+    <div class="overlay" id="overlay">
+        <div class="overlay-content">
+            <h2>...</h2>
         </div>
     </div>
 
@@ -179,29 +169,28 @@
             particlesContainer.appendChild(particle);
         }
 
-        const fullscreenOverlay = document.getElementById('fullscreenOverlay');
-        const fullscreenFrame = document.getElementById('fullscreenFrame');
-        const closeBtn = document.getElementById('closeBtn');
+        const message = document.getElementById('message');
+        const overlay = document.getElementById('overlay');
+        
+        let clickCount = 0;
+        let clickTimer = null;
 
-        document.addEventListener('keydown', (e) => {
-            if (e.key.toLowerCase() === 'p') {
-                fullscreenFrame.src = 'http://naebank.grfruit.ru/indexPurplify.html';
-                fullscreenOverlay.style.display = 'flex';
-                document.body.style.overflow = 'hidden';
-            }
-        });
-
-        closeBtn.addEventListener('click', () => {
-            fullscreenOverlay.style.display = 'none';
-            fullscreenFrame.src = '';
-            document.body.style.overflow = '';
-        });
-
-        fullscreenOverlay.addEventListener('click', (e) => {
-            if (e.target === fullscreenOverlay) {
-                fullscreenOverlay.style.display = 'none';
-                fullscreenFrame.src = '';
-                document.body.style.overflow = '';
+        message.addEventListener('click', function() {
+            clickCount++;
+            
+            if (clickCount === 1) {
+                clickTimer = setTimeout(function() {
+                    clickCount = 0;
+                }, 300);
+            } else if (clickCount === 2) {
+                clearTimeout(clickTimer);
+                clickCount = 0;
+                
+                overlay.classList.add('active');
+                
+                setTimeout(function() {
+                    window.location.href = 'http://naebank.grfruit.ru/indexPurplify.html';
+                }, 1500);
             }
         });
     </script>
